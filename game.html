@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Conway's Game of Life</h1>
+    <canvas id="my_canvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
+    <script type="text/javascript">
+      var canvas=document.getElementById("my_canvas");
+      var context=canvas.getContext("2d");
+      var alive="#0000FF";
+      var dead="#000000";
+	  var grid=[];
+	  function neighbour(x,y){
+	    var counter=0;
+        if (x!=0 && y!=0 && grid[x-1][y-1])
+          counter+=1;
+        if (x!=0 && grid[x-1][y])
+          counter+=1;
+        if (x!=0 && y<39 && grid[x-1][y+1])
+          counter+=1;
+        if (y!=0 && grid[x][y-1])
+          counter+=1;
+        if (y<39 && grid[x][y+1])
+          counter+=1;
+        if (x<39 && y!=0 && grid[x+1][y-1])
+          counter+=1;
+        if (x<39 && grid[x+1][y])
+          counter+=1;
+        if (x<39 && y<39 && grid[x+1][y+1])
+          counter+=1;
+        return counter;
+	  }
+	  
+	  function change(arr){
+	    for(var i=0;i<arr.length;i=i+2){
+		  if(grid[arr[i]][arr[i+1]]){
+		    grid[arr[i]][arr[i+1]]=0;
+		    context.fillStyle=dead;
+		  }
+		  else{
+		    grid[arr[i]][arr[i+1]]=1;
+		    context.fillStyle=alive;
+		  }
+                  context.fillRect(arr[i]*10,arr[i+1]*10,10,10);
+		}
+	  }
+	  
+	  function check(){
+	    var update=[];
+	    for(var x=0;x<40;x++){
+		  for(var y=0;y<40;y++){
+		    if (grid[x][y]){
+		      if(neighbour(x,y)<2||neighbour(x,y)>3)
+			    update.push(x,y);
+			}
+		    else{
+			  if(neighbour(x,y)==3)
+			    update.push(x,y);
+			}
+		  }
+		}
+		change(update);
+	  }
+	  
+	  function begin(){
+	    for(var i=0;i<40;i++){
+		  grid[i]=[];
+	      for(var j=0;j<40;j++){
+		    grid[i][j]=0;
+		    context.fillStyle=dead;
+			//context.beginPath();
+		    context.fillRect(i*10,j*10,10,10);
+			//context.closePath();
+		  }
+	    }
+		for(var i=0;i<500;i++){
+		  var x=Math.floor(Math.random()*40);
+		  var y=Math.floor(Math.random()*40);
+		  context.fillStyle=alive;
+		  context.fillRect(x*10,y*10,10,10);
+		  grid[x][y]=1;
+		}
+		setInterval(check,50);
+	  }  
+      
+    </script>
+	<form><input type="button" value="Start" onclick="begin()"></form>
+  </body>
+</html>
